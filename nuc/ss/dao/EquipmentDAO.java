@@ -24,6 +24,11 @@ public interface EquipmentDAO {
     void remove(String id);
 
     /**
+     * 按照id查询
+     */
+    Equipment queryById(String id);
+
+    /**
      * 按照领用人查询
      */
     List<Equipment> queryByUser(String user);

@@ -271,5 +271,32 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         return "设备管理";
     }
 
-    
+    @Override
+    public Equipment queryById(String id) {
+        String sql = "select * from equipment where id = ?";
+        Equipment equipment = null;
+        Connection conn = null;
+        PreparedStatement prestmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConn.getConnection();
+            prestmt = conn.prepareStatement(sql);
+            prestmt.setString(1, id);
+            rs = prestmt.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                String user = rs.getString("user");
+                String type = rs.getString("type");
+                boolean lent = rs.getBoolean("lent");
+                boolean scrap = rs.getBoolean("scrap");
+                equipment = new Equipment(id, name, user, type, lent, scrap);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConn.close(rs, prestmt, conn);
+        }
+        return equipment;
+    }
+
 }

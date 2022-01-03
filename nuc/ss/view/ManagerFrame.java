@@ -1,23 +1,15 @@
 package nuc.ss.view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import nuc.ss.dao.DAOFactory;
@@ -31,21 +23,20 @@ public class ManagerFrame extends JFrame {
         new ManagerFrame(new User());
     }
 
-    User user;
-    JLabel l_message, l_queryCondition, l_queryValue;
-    JMenuBar menuBar;
-    JMenu menu, subMenu;
-    JMenuItem item1, item2, item3;
-    JTree tree;
-    JPanel p_Equipment, p_User;
-    JTable jtable;
-    JScrollPane jScrollPane;
-    DefaultTableModel tModel;
-    JComboBox<String> c_queryKey_Equipment;
-    JTextField t_queryValue_Equipment;
-    JButton b_queryEquipment, b_addEquipment;
-
-    JButton b_addUser;
+    private User user;
+    private JLabel l_message, l_queryCondition, l_queryValue;
+    private JMenuBar menuBar;
+    private JMenu menu, subMenu;
+    private JMenuItem item1, item2, item3;
+    private JTree tree;
+    private JPanel p_main, p_Equipment, p_User;
+    private JTable jtable_equipment, jtable_user;
+    private JScrollPane jScrollPane;
+    private DefaultTableModel tModel_equipment, tModel_User;
+    private JComboBox<String> c_queryKey_Equipment;
+    private JTextField t_queryValue_Equipment;
+    private JButton b_queryEquipment, b_addEquipment;
+    private JButton b_addUser;
 
     public ManagerFrame(User user) {
         this.user = user;
@@ -88,6 +79,8 @@ public class ManagerFrame extends JFrame {
 
         p_Equipment = new JPanel(null);
         p_Equipment.setBackground(Color.WHITE);
+        p_User = new JPanel(null);
+        p_User.setBackground(Color.WHITE);
 
         l_queryCondition = new JLabel("查询条件：");
         p_Equipment.add(l_queryCondition);
@@ -113,39 +106,62 @@ public class ManagerFrame extends JFrame {
         p_Equipment.add(b_addEquipment);
         b_addEquipment.setBounds(730, 10, 100, 30);
 
-        tModel = new DefaultTableModel();
-        jtable = new JTable(tModel);
-        jtable.setFont(jtable.getFont().deriveFont(14F));
-        jtable.getTableHeader().setFont(jtable.getFont().deriveFont(16F));
-        jtable.getTableHeader().setFont(jtable.getFont().deriveFont(Font.BOLD));
-        jtable.setRowHeight(30);
-        jtable.setAlignmentX(JTable.CENTER_ALIGNMENT);
-        jtable.setAlignmentY(JTable.CENTER_ALIGNMENT);
-        jScrollPane = new JScrollPane(jtable);
+        tModel_equipment = new DefaultTableModel();
+        jtable_equipment = new JTable(tModel_equipment);
+        jtable_equipment.setFont(jtable_equipment.getFont().deriveFont(14F));
+        jtable_equipment.getTableHeader().setFont(jtable_equipment.getFont().deriveFont(16F));
+        jtable_equipment.getTableHeader().setFont(jtable_equipment.getFont().deriveFont(Font.BOLD));
+        jtable_equipment.setRowHeight(30);
+        jtable_equipment.setAlignmentX(JTable.CENTER_ALIGNMENT);
+        jtable_equipment.setAlignmentY(JTable.CENTER_ALIGNMENT);
+        jScrollPane = new JScrollPane(jtable_equipment);
         p_Equipment.add(jScrollPane);
         // 要先添加再设置size才可生效（原因不明）
         jScrollPane.setBounds(1, 100, 900, 600);
 
         b_addUser = new JButton("添加成员");
-        p_User.add(b_addEquipment);
+        p_User.add(b_addUser);
         b_addUser.setBounds(730, 10, 100, 30);
+        tModel_User = new DefaultTableModel();
+        jtable_user = new JTable(tModel_User);
+        jtable_user.setFont(jtable_user.getFont().deriveFont(14F));
+        jtable_user.getTableHeader().setFont(jtable_user.getFont().deriveFont(16F));
+        jtable_user.getTableHeader().setFont(jtable_user.getFont().deriveFont(Font.BOLD));
+        jtable_user.setRowHeight(30);
+        jtable_user.setAlignmentX(JTable.CENTER_ALIGNMENT);
+        jtable_user.setAlignmentY(JTable.CENTER_ALIGNMENT);
+        jScrollPane = new JScrollPane(jtable_user);
+        p_User.add(jScrollPane);
+        jScrollPane.setBounds(1, 100, 900, 600);
 
         this.add(l_message);
         l_message.setBounds(10, 10, 200, 30);
         this.add(tree);
         tree.setBounds(10, 50, 200, 700);
-        this.add(p_Equipment);
-        p_Equipment.setBounds(230, 50, 900, 700);
+        p_main = p_Equipment;
+        this.add(p_main);
+        p_main.setBounds(230, 50, 900, 700);
 
         initEquipmentPanel(DAOFactory.getEquipmentDAO());
+
         tree.addTreeSelectionListener(tse -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             Object obj = node.getUserObject();
             if (obj instanceof UserDAO) {
                 initUserPanel(obj);
+                jFrame.remove(p_main);
+                p_main = p_User;
+                this.add(p_main);
+                p_main.repaint();
+                p_main.setBounds(230, 50, 900, 700);
             }
             if (obj instanceof EquipmentDAO) {
                 initEquipmentPanel(obj);
+                jFrame.remove(p_main);
+                p_main = p_Equipment;
+                this.add(p_main);
+                p_main.repaint();
+                p_main.setBounds(230, 50, 900, 700);
                 // DefaultTableModel tModel = new DefaultTableModel(data, columnsNames);
                 // jtable = new JTable(tModel);
             }
@@ -159,6 +175,9 @@ public class ManagerFrame extends JFrame {
             // jFrame.add(p1);
         });
 
+        /**
+         * 查询设备按钮的监听器
+         */
         b_queryEquipment.addActionListener(l -> {
             String keyString = c_queryKey_Equipment.getSelectedItem().toString();
             if (keyString.equals("所有设备")) {
@@ -186,19 +205,77 @@ public class ManagerFrame extends JFrame {
         });
 
         b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
+        b_addUser.addActionListener(l -> new AddUserFrame());
 
+        /**
+         * 修改表格内容的监听器
+         */
+        tModel_equipment.addTableModelListener(l -> {
+            int firstRow = l.getFirstRow();
+            if (firstRow == -1) {
+                return;
+            }
+            int lastRow = l.getLastRow();
+            int column = l.getColumn();
+            int eventType = l.getType();
+            if (eventType == TableModelEvent.UPDATE) {
+                for (int row = firstRow; row <= lastRow; row++) {
+                    Object idObj = tModel_equipment.getValueAt(row, 0);
+                    Object nameObj = tModel_equipment.getValueAt(row, 1);
+                    Object userObj = tModel_equipment.getValueAt(row, 2);
+                    Object typeObj = tModel_equipment.getValueAt(row, 3);
+                    Object lentObj = tModel_equipment.getValueAt(row, 4);
+                    Object scrapObj = tModel_equipment.getValueAt(row, 5);
+
+                    String id = idObj.toString();
+                    // 把对象值转换为数值
+                    String name = nameObj.toString();
+                    String user = userObj.toString();
+                    String type = typeObj.toString();
+
+                    String lentStr = lentObj.toString();
+                    boolean lent = false;
+                    if (lentStr.equals("是") || lentStr.equals("否")) {
+                        lentStr = convertString(lentStr);
+                        lent = Boolean.parseBoolean(lentStr);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "是否借用只能填是或否");
+                        return;
+                    }
+
+                    String scrapStr = scrapObj.toString();
+                    boolean scrap = false;
+                    if (scrapStr.equals("是") || scrapStr.equals("否")) {
+                        scrapStr = convertString(scrapStr);
+                        scrap = Boolean.parseBoolean(scrapStr);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "是否故障只能填是或否");
+                        return;
+                    }
+
+                    System.out.println(id);
+                    Equipment equipment = DAOFactory.getEquipmentDAO().queryById(id);
+                    equipment.setName(name);
+                    equipment.setUser(user);
+                    equipment.setType(type);
+                    equipment.setLent(lent);
+                    equipment.setScrap(scrap);
+                    DAOFactory.getEquipmentDAO().update(equipment);
+                    JOptionPane.showMessageDialog(this, "修改成功");
+                }
+            }
+        });
     }
 
     private void initUserPanel(Object obj) {
         UserDAO userDAO = (UserDAO) obj;
         List<User> dataList = userDAO.queryAll();
         setUserData(dataList);
-
     }
 
     private void setUserData(List<User> dataList) {
         String[] columnsNames = { "账号", "密码", "姓名", "性别", "电话", "身份" };
-        String[][] data = new String[10][columnsNames.length];
+        String[][] data = new String[dataList.size()][columnsNames.length];
         User u = null;
         for (int i = 0; i < dataList.size(); i++) {
             u = dataList.get(i);
@@ -209,18 +286,19 @@ public class ManagerFrame extends JFrame {
             data[i][4] = u.getPhoneNumber();
             data[i][5] = u.getType();
         }
-        tModel.setDataVector(data, columnsNames);
+        tModel_User.setDataVector(data, columnsNames);
     }
 
     private void initEquipmentPanel(Object obj) {
         EquipmentDAO equipmentDAO = (EquipmentDAO) obj;
         List<Equipment> dataList = equipmentDAO.queryAll();
         setEquipmentData(dataList);
+        jtable_equipment.getColumn("是否借用").setCellRenderer(new MyTableCellRenderer());
     }
 
     private void setEquipmentData(List<Equipment> dataList) {
         String[] columnsNames = { "设备编号", "设备名称", "领用人", "设备类型", "是否借用", "是否故障" };
-        String[][] data = new String[10][columnsNames.length];
+        String[][] data = new String[dataList.size()][columnsNames.length];
         Equipment e = null;
         for (int i = 0; i < dataList.size(); i++) {
             e = dataList.get(i);
@@ -231,8 +309,7 @@ public class ManagerFrame extends JFrame {
             data[i][4] = convertBoolean(e.isLent());
             data[i][5] = convertBoolean(e.isScrap());
         }
-
-        tModel.setDataVector(data, columnsNames);
+        tModel_equipment.setDataVector(data, columnsNames);
     }
 
     private static String convertString(String key) {
@@ -271,5 +348,20 @@ public class ManagerFrame extends JFrame {
                 break;
         }
         return str;
+    }
+
+    public static class MyTableCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
+
+            String lentStr = table.getModel().getValueAt(row, column).toString();
+            if (lentStr.equals("是")) {
+                this.setBackground(new Color(0x7B, 0xBF, 0xEA));
+            } else {
+                this.setBackground(Color.WHITE);
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
     }
 }
