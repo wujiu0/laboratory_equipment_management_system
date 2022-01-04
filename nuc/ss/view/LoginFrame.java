@@ -69,7 +69,11 @@ public class LoginFrame extends JFrame {
 
         if (flag) {
             User user = userDao.query(id);
-            new ManagerFrame(user);
+            if (user.getType().equals("管理员")) {
+                new ManagerFrame(user);
+            }else{
+                JOptionPane.showMessageDialog(this, "请获取管理员身份");
+            }
         } else {
             JOptionPane.showMessageDialog(b_login, "用户名或密码错误", "提示", JOptionPane.INFORMATION_MESSAGE);
         }

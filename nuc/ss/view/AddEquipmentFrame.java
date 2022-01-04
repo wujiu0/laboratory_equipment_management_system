@@ -92,6 +92,7 @@ public class AddEquipmentFrame extends JFrame {
             return;
         }
         equipmentDAO.insert(equipment);
+        JOptionPane.showMessageDialog(this, "添加成功");
     }
 
     private boolean isEmpty(String id, String name, String type) {

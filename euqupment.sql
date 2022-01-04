@@ -1,4 +1,6 @@
--- CREATE DATABASE 6_05_coursedesign;
+DROP DATABASE IF EXISTS `6_05_coursedesign`;
+CREATE DATABASE `6_05_coursedesign`;
+USE 6_05_coursedesign;
 DROP TABLE IF EXISTS `equipment`;
 CREATE TABLE `equipment` (
     `id` char(5) PRIMARY KEY,
@@ -49,6 +51,22 @@ VALUES(
         '18888888888',
         '普通用户'
     );
+INSERT INTO user(
+        `id`,
+        `password`,
+        `name`,
+        `sex`,
+        `phoneNumber`,
+        `type`
+    )
+VALUES(
+        'u0003',
+        '123456',
+        '王五',
+        '男',
+        '110',
+        '普通用户'
+    );
 INSERT INTO `equipment` (
         `id`,
         `name`,
@@ -80,4 +98,36 @@ VALUES(
         '类型2',
         1,
         0
+    );
+INSERT INTO `equipment` (
+        `id`,
+        `name`,
+        `user`,
+        `type`,
+        `lent`,
+        `scrap`
+    )
+VALUES(
+        'e0003',
+        '设备3',
+        '无',
+        '类型1',
+        0,
+        0
+    );
+INSERT INTO `equipment` (
+        `id`,
+        `name`,
+        `user`,
+        `type`,
+        `lent`,
+        `scrap`
+    )
+VALUES(
+        'e0004',
+        '设备4',
+        '无',
+        '类型2',
+        0,
+        1
     );

@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import nuc.ss.dao.DAOFactory;
@@ -106,8 +105,19 @@ public class ManagerFrame extends JFrame {
         p_Equipment.add(b_addEquipment);
         b_addEquipment.setBounds(730, 10, 100, 30);
 
+        /**
+         * 创建设备信息的表格，设置第一列不可编辑
+         */
         tModel_equipment = new DefaultTableModel();
-        jtable_equipment = new JTable(tModel_equipment);
+        jtable_equipment = new JTable(tModel_equipment) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0) {
+                    return false;
+                }
+                return true;
+            }
+        };
         jtable_equipment.setFont(jtable_equipment.getFont().deriveFont(14F));
         jtable_equipment.getTableHeader().setFont(jtable_equipment.getFont().deriveFont(16F));
         jtable_equipment.getTableHeader().setFont(jtable_equipment.getFont().deriveFont(Font.BOLD));
@@ -217,6 +227,10 @@ public class ManagerFrame extends JFrame {
             }
             int lastRow = l.getLastRow();
             int column = l.getColumn();
+            if (column == 0) {
+                JOptionPane.showMessageDialog(this, "设备编号不可变");
+                return;
+            }
             int eventType = l.getType();
             if (eventType == TableModelEvent.UPDATE) {
                 for (int row = firstRow; row <= lastRow; row++) {
@@ -253,7 +267,7 @@ public class ManagerFrame extends JFrame {
                         return;
                     }
 
-                    System.out.println(id);
+                    // System.out.println(id);
                     Equipment equipment = DAOFactory.getEquipmentDAO().queryById(id);
                     equipment.setName(name);
                     equipment.setUser(user);
@@ -293,7 +307,8 @@ public class ManagerFrame extends JFrame {
         EquipmentDAO equipmentDAO = (EquipmentDAO) obj;
         List<Equipment> dataList = equipmentDAO.queryAll();
         setEquipmentData(dataList);
-        jtable_equipment.getColumn("是否借用").setCellRenderer(new MyTableCellRenderer());
+        jtable_equipment.getColumn("是否借用").setCellRenderer(new MyTableCellRenderer_lent());
+        jtable_equipment.getColumn("是否故障").setCellRenderer(new MyTableCellRenderer_scrap());
     }
 
     private void setEquipmentData(List<Equipment> dataList) {
@@ -350,16 +365,31 @@ public class ManagerFrame extends JFrame {
         return str;
     }
 
-    public static class MyTableCellRenderer extends DefaultTableCellRenderer {
+    public static class MyTableCellRenderer_lent extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                 int row, int column) {
 
             String lentStr = table.getModel().getValueAt(row, column).toString();
             if (lentStr.equals("是")) {
-                this.setBackground(new Color(0x7B, 0xBF, 0xEA));
+                this.setForeground(Color.BLUE);
             } else {
-                this.setBackground(Color.WHITE);
+                this.setForeground(Color.BLACK);
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
+    }
+    public static class MyTableCellRenderer_scrap extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
+
+            String lentStr = table.getModel().getValueAt(row, column).toString();
+            if (lentStr.equals("是")) {
+                // this.setText("<html><font color='red'>是1</font>");
+                this.setForeground(Color.RED);
+            } else {
+                this.setForeground(Color.BLACK);
             }
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
