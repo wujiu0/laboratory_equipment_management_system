@@ -49,7 +49,7 @@ public class UserDAOImpl implements UserDAO {
             prestmt.setString(3, user.getSex());
             prestmt.setString(4, user.getPhoneNumber());
             prestmt.setString(5, user.getType());
-            prestmt.setString(6, user.getType());
+            prestmt.setString(6, user.getId());
             prestmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

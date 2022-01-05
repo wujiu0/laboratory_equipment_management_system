@@ -18,7 +18,9 @@
 --
 -- Table structure for table `equipment`
 --
-
+DROP DATABASE IF EXISTS `6_05_coursedesign`;
+CREATE DATABASE `6_05_coursedesign`;
+use 6_05_coursedesign;
 DROP TABLE IF EXISTS `equipment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

@@ -82,6 +82,10 @@ public class AddUserFrame extends JFrame {
 
         b_add.addActionListener(e -> {
             String id = t_id.getText();
+            if (id.length() > 5) {
+                JOptionPane.showMessageDialog(this, "账号长度不可以超过5位");
+                return;
+            }
             String name = t_name.getText();
             String phoneNumber = t_phoneNumber.getText();
             String sex = "";

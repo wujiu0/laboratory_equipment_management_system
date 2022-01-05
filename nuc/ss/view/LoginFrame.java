@@ -54,7 +54,10 @@ public class LoginFrame extends JFrame {
         b_login.addActionListener(e -> {
             String id = t_id.getText();
             String password = new String(t_password.getPassword());
-            login(id, password);
+            boolean result = login(id, password);
+            if (result) {
+                dispose();
+            }
         });
         b_reset.addActionListener(e -> {
             t_id.setText("");
@@ -63,7 +66,7 @@ public class LoginFrame extends JFrame {
         setVisible(true);
     }
 
-    public void login(String id, String password) {
+    public boolean login(String id, String password) {
         UserDAO userDao = DAOFactory.getUserDAO();
         boolean flag = userDao.check(id, password);
 
@@ -71,13 +74,14 @@ public class LoginFrame extends JFrame {
             User user = userDao.query(id);
             if (user.getType().equals("管理员")) {
                 new ManagerFrame(user);
+                return true;
             } else {
                 JOptionPane.showMessageDialog(this, "请获取管理员身份");
             }
         } else {
             JOptionPane.showMessageDialog(b_login, "用户名或密码错误", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
-
+        return false;
     }
 
 }

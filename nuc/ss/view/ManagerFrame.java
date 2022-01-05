@@ -218,15 +218,21 @@ public class ManagerFrame extends JFrame {
 
         b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
         b_deleteEquipment.addActionListener(l -> {
-            int row = jtable_equipment.getSelectedRow();
-            String id = tModel_equipment.getValueAt(row, 0).toString();
-            DAOFactory.getEquipmentDAO().remove(id);
+            int[] rows = jtable_equipment.getSelectedRows();
+            for (int i = 0; i < rows.length; i++) {
+                String id = tModel_equipment.getValueAt(rows[i], 0).toString();
+                DAOFactory.getEquipmentDAO().remove(id);
+            }
             JOptionPane.showMessageDialog(this, "删除成功");
         });
         b_addUser.addActionListener(l -> new AddUserFrame());
         b_deleteUser.addActionListener(l -> {
             int row = jtable_user.getSelectedRow();
-            String id = tModel_equipment.getValueAt(row, 0).toString();
+            String id = tModel_User.getValueAt(row, 0).toString();
+            if (id.equals(user.getId())) {
+                JOptionPane.showMessageDialog(this, "操作失败，不可删除自己");
+                return;
+            }
             DAOFactory.getUserDAO().remove(id);
             JOptionPane.showMessageDialog(this, "删除成功");
         });
@@ -324,6 +330,10 @@ public class ManagerFrame extends JFrame {
                     String type = typeObj.toString();
                     if (!(sex.equals("男") || sex.equals("女"))) {
                         JOptionPane.showMessageDialog(this, "性别只能为男或女");
+                        return;
+                    }
+                    if (!(type.equals("管理员") || type.equals("普通用户"))) {
+                        JOptionPane.showMessageDialog(this, "身份设置错误，只能为管理员或者普通用户");
                         return;
                     }
                     User user = DAOFactory.getUserDAO().query(id);

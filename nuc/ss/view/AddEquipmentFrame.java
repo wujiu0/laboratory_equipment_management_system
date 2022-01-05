@@ -59,7 +59,10 @@ public class AddEquipmentFrame extends JFrame {
             String id = t_id.getText();
             String name = t_name.getText();
             String type = t_type.getText();
-
+            if (id.length() > 5) {
+                JOptionPane.showMessageDialog(this, "设备编号长度不可以超过5位");
+                return;
+            }
             // // 判断输入是否为空
             if (isEmpty(id, name, type)) {
                 return;
