@@ -34,7 +34,7 @@ public class ManagerFrame extends JFrame {
     private DefaultTableModel tModel_equipment, tModel_User;
     private JComboBox<String> c_queryKey_Equipment;
     private JTextField t_queryValue_Equipment;
-    private JButton b_queryEquipment, b_addEquipment;
+    private JButton b_queryEquipment, b_addEquipment, b_deleteEquipment;
     private JButton b_addUser;
 
     public ManagerFrame(User user) {
@@ -104,7 +104,9 @@ public class ManagerFrame extends JFrame {
         b_addEquipment = new JButton("添加设备");
         p_Equipment.add(b_addEquipment);
         b_addEquipment.setBounds(730, 10, 100, 30);
-
+        b_deleteEquipment = new JButton("删除设备");
+        p_Equipment.add(b_deleteEquipment);
+        b_deleteEquipment.setBounds(730, 50, 100, 30);
         /**
          * 创建设备信息的表格，设置第一列不可编辑
          */
@@ -216,6 +218,12 @@ public class ManagerFrame extends JFrame {
 
         b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
         b_addUser.addActionListener(l -> new AddUserFrame());
+        b_deleteEquipment.addActionListener(l -> {
+            int row = jtable_equipment.getSelectedRow();
+            String id = tModel_equipment.getValueAt(row, 0).toString();
+            DAOFactory.getEquipmentDAO().remove(id);
+            JOptionPane.showMessageDialog(this, "删除成功");
+        });
 
         /**
          * 修改表格内容的监听器
@@ -379,6 +387,7 @@ public class ManagerFrame extends JFrame {
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
+
     public static class MyTableCellRenderer_scrap extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
