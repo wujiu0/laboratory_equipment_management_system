@@ -24,9 +24,9 @@ public class ManagerFrame extends JFrame {
 
     private User user;
     private JLabel l_message, l_queryCondition, l_queryValue;
-    private JMenuBar menuBar;
-    private JMenu menu, subMenu;
-    private JMenuItem item1, item2, item3;
+    // private JMenuBar menuBar;
+    // private JMenu menu, subMenu;
+    // private JMenuItem item1, item2, item3;
     private JTree tree;
     private JPanel p_main, p_Equipment, p_User;
     private JTable jtable_equipment, jtable_user;
@@ -35,7 +35,7 @@ public class ManagerFrame extends JFrame {
     private JComboBox<String> c_queryKey_Equipment;
     private JTextField t_queryValue_Equipment;
     private JButton b_queryEquipment, b_addEquipment, b_deleteEquipment;
-    private JButton b_addUser;
+    private JButton b_addUser, b_deleteUser;
 
     public ManagerFrame(User user) {
         this.user = user;
@@ -50,19 +50,19 @@ public class ManagerFrame extends JFrame {
 
     private void init(JFrame jFrame) {
         this.setLayout(null);
-        menuBar = new JMenuBar();
-        menu = new JMenu("菜单");
-        subMenu = new JMenu("子菜单");
-        item1 = new JMenuItem("菜单项1");
-        item2 = new JMenuItem("菜单项2");
-        item3 = new JMenuItem("菜单项3");
+        // menuBar = new JMenuBar();
+        // menu = new JMenu("菜单");
+        // subMenu = new JMenu("子菜单");
+        // item1 = new JMenuItem("菜单项1");
+        // item2 = new JMenuItem("菜单项2");
+        // item3 = new JMenuItem("菜单项3");
 
-        menu.add(item1);
-        menu.add(subMenu);
-        menu.add(item2);
-        subMenu.add(item3);
-        menuBar.add(menu);
-        this.setJMenuBar(menuBar);
+        // menu.add(item1);
+        // menu.add(subMenu);
+        // menu.add(item2);
+        // subMenu.add(item3);
+        // menuBar.add(menu);
+        // this.setJMenuBar(menuBar);
 
         l_message = new JLabel("欢迎，" + user.getName() + "(" + user.getType() + ")");
         l_message.setFont(l_message.getFont().deriveFont(20.0F));
@@ -83,7 +83,7 @@ public class ManagerFrame extends JFrame {
 
         l_queryCondition = new JLabel("查询条件：");
         p_Equipment.add(l_queryCondition);
-        l_queryCondition.setBounds(70, 10, 100, 30);
+        l_queryCondition.setBounds(70, 30, 100, 30);
         c_queryKey_Equipment = new JComboBox<String>();
         c_queryKey_Equipment.addItem("所有设备");
         c_queryKey_Equipment.addItem("领用人");
@@ -91,16 +91,16 @@ public class ManagerFrame extends JFrame {
         c_queryKey_Equipment.addItem("是否借用");
         c_queryKey_Equipment.addItem("是否故障");
         p_Equipment.add(c_queryKey_Equipment);
-        c_queryKey_Equipment.setBounds(150, 10, 150, 30);
+        c_queryKey_Equipment.setBounds(150, 30, 150, 30);
         l_queryValue = new JLabel("查询值：");
         p_Equipment.add(l_queryValue);
-        l_queryValue.setBounds(330, 10, 100, 30);
+        l_queryValue.setBounds(330, 30, 100, 30);
         t_queryValue_Equipment = new JTextField();
         p_Equipment.add(t_queryValue_Equipment);
-        t_queryValue_Equipment.setBounds(400, 10, 100, 30);
+        t_queryValue_Equipment.setBounds(400, 30, 100, 30);
         b_queryEquipment = new JButton("查询");
         p_Equipment.add(b_queryEquipment);
-        b_queryEquipment.setBounds(520, 10, 100, 30);
+        b_queryEquipment.setBounds(520, 30, 100, 30);
         b_addEquipment = new JButton("添加设备");
         p_Equipment.add(b_addEquipment);
         b_addEquipment.setBounds(730, 10, 100, 30);
@@ -133,7 +133,10 @@ public class ManagerFrame extends JFrame {
 
         b_addUser = new JButton("添加成员");
         p_User.add(b_addUser);
-        b_addUser.setBounds(730, 10, 100, 30);
+        b_addUser.setBounds(230, 30, 100, 30);
+        b_deleteUser = new JButton("删除成员");
+        p_User.add(b_deleteUser);
+        b_deleteUser.setBounds(530, 30, 100, 30);
         tModel_User = new DefaultTableModel();
         jtable_user = new JTable(tModel_User);
         jtable_user.setFont(jtable_user.getFont().deriveFont(14F));
@@ -217,11 +220,17 @@ public class ManagerFrame extends JFrame {
         });
 
         b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
-        b_addUser.addActionListener(l -> new AddUserFrame());
         b_deleteEquipment.addActionListener(l -> {
             int row = jtable_equipment.getSelectedRow();
             String id = tModel_equipment.getValueAt(row, 0).toString();
             DAOFactory.getEquipmentDAO().remove(id);
+            JOptionPane.showMessageDialog(this, "删除成功");
+        });
+        b_addUser.addActionListener(l -> new AddUserFrame());
+        b_deleteUser.addActionListener(l -> {
+            int row = jtable_user.getSelectedRow();
+            String id = tModel_equipment.getValueAt(row, 0).toString();
+            DAOFactory.getUserDAO().remove(id);
             JOptionPane.showMessageDialog(this, "删除成功");
         });
 
@@ -283,6 +292,51 @@ public class ManagerFrame extends JFrame {
                     equipment.setLent(lent);
                     equipment.setScrap(scrap);
                     DAOFactory.getEquipmentDAO().update(equipment);
+                    JOptionPane.showMessageDialog(this, "修改成功");
+                }
+            }
+        });
+
+        tModel_User.addTableModelListener(l -> {
+            int firstRow = l.getFirstRow();
+            if (firstRow == -1) {
+                return;
+            }
+            int lastRow = l.getLastRow();
+            int column = l.getColumn();
+            if (column == 0) {
+                JOptionPane.showMessageDialog(this, "账号不可修改");
+                return;
+            }
+            int eventType = l.getType();
+            if (eventType == TableModelEvent.UPDATE) {
+                for (int row = firstRow; row <= lastRow; row++) {
+                    Object idObj = tModel_User.getValueAt(row, 0);
+                    Object passwordObj = tModel_User.getValueAt(row, 1);
+                    Object nameObj = tModel_User.getValueAt(row, 2);
+                    Object sexObj = tModel_User.getValueAt(row, 3);
+                    Object phoneObj = tModel_User.getValueAt(row, 4);
+                    Object typeObj = tModel_User.getValueAt(row, 5);
+
+                    String id = idObj.toString();
+                    // 把对象值转换为数值
+                    String password = passwordObj.toString();
+                    String name = nameObj.toString();
+                    String sex = sexObj.toString();
+                    String phoneNumber = phoneObj.toString();
+                    String type = typeObj.toString();
+                    if (!(sex.equals("男") || sex.equals("女"))) {
+                        JOptionPane.showMessageDialog(this, "性别只能为男或女");
+                        return;
+                    }
+                    User user = DAOFactory.getUserDAO().query(id);
+                    user.setPassword(password);
+                    user.setName(name);
+                    user.setSex(sex);
+                    user.setPhoneNumber(phoneNumber);
+                    user.setType(type);
+                    // System.out.println(id);
+                    DAOFactory.getUserDAO().update(user);
                     JOptionPane.showMessageDialog(this, "修改成功");
                 }
             }

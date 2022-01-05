@@ -144,5 +144,6 @@ public class AddUserFrame extends JFrame {
         }
 
         userDao.insert(user);
+        JOptionPane.showMessageDialog(this, "添加成功");
     }
 }
