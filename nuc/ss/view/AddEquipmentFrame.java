@@ -15,10 +15,6 @@ import nuc.ss.entity.Equipment;
 
 public class AddEquipmentFrame extends JFrame {
 
-    public static void main(String[] args) {
-        new AddEquipmentFrame();
-    }
-
     private JLabel l_id, l_name, l_type;
     private JTextField t_id, t_name, t_type;
     private JButton b_add, b_reset;

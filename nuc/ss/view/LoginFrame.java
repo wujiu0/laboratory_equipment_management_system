@@ -71,7 +71,7 @@ public class LoginFrame extends JFrame {
             User user = userDao.query(id);
             if (user.getType().equals("管理员")) {
                 new ManagerFrame(user);
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "请获取管理员身份");
             }
         } else {
@@ -80,7 +80,4 @@ public class LoginFrame extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        new LoginFrame();
-    }
 }

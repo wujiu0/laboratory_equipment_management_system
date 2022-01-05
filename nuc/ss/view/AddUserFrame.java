@@ -18,10 +18,6 @@ import nuc.ss.entity.User;
 
 public class AddUserFrame extends JFrame {
 
-    public static void main(String[] args) {
-        new AddUserFrame();
-    }
-
     private JLabel l_id, l_name, l_phoneNumber, l_sex, l_type;
     private JTextField t_id, t_name, t_phoneNumber;
     private JRadioButton r_sex1, r_sex2;

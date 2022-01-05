@@ -18,9 +18,6 @@ import nuc.ss.entity.Equipment;
 import nuc.ss.entity.User;
 
 public class ManagerFrame extends JFrame {
-    public static void main(String[] args) {
-        new ManagerFrame(new User());
-    }
 
     private User user;
     private JLabel l_message, l_queryCondition, l_queryValue;
