@@ -10,6 +10,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 import nuc.ss.dao.DAOFactory;
 import nuc.ss.dao.EquipmentDAO;
@@ -71,7 +72,21 @@ public class ManagerFrame extends JFrame {
         root.add(userManager);
         tree = new JTree(root);
         tree.setRootVisible(false);
-        tree.setFont(tree.getFont().deriveFont(20.0F));
+        tree.setFont(tree.getFont().deriveFont(22.0F));
+        tree.setCellRenderer(new DefaultTreeCellRenderer() {
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                    boolean leaf, int row, boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                String str = value.toString();
+                if (str.equals("设备管理")) {
+                    this.setIcon(new ImageIcon("src\\imgs\\equipment.png"));
+                } else if (str.equals("成员管理")) {
+                    this.setIcon(new ImageIcon("src\\imgs\\user.png"));
+                }
+                return this;
+            }
+        });
 
         p_Equipment = new JPanel(null);
         p_Equipment.setBackground(Color.WHITE);
