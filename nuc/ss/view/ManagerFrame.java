@@ -38,7 +38,7 @@ public class ManagerFrame extends JFrame {
     public ManagerFrame(User user) {
         this.user = user;
         this.setTitle("实验设备管理系统");
-        this.setSize(1200, 900);
+        this.setSize(1200, 850);
         this.setResizable(false);
         this.setLocation(400, 100);
         init(this);
