@@ -234,6 +234,10 @@ public class ManagerFrame extends JFrame {
         b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
         b_deleteEquipment.addActionListener(l -> {
             int[] rows = jtable_equipment.getSelectedRows();
+            if (rows.length == 0) {
+                JOptionPane.showMessageDialog(this, "请选中一行设备再点击删除");
+                return;
+            }
             for (int i = 0; i < rows.length; i++) {
                 String id = tModel_equipment.getValueAt(rows[i], 0).toString();
                 DAOFactory.getEquipmentDAO().remove(id);
