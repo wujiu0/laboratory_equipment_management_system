@@ -246,13 +246,19 @@ public class ManagerFrame extends JFrame {
         });
         b_addUser.addActionListener(l -> new AddUserFrame());
         b_deleteUser.addActionListener(l -> {
-            int row = jtable_user.getSelectedRow();
-            String id = tModel_User.getValueAt(row, 0).toString();
-            if (id.equals(user.getId())) {
-                JOptionPane.showMessageDialog(this, "操作失败，不可删除自己");
+            int[] rows = jtable_user.getSelectedRows();
+            if (rows.length == 0) {
+                JOptionPane.showMessageDialog(this, "请选中一行设备再点击删除");
                 return;
             }
-            DAOFactory.getUserDAO().remove(id);
+            for (int i = 0; i < rows.length; i++) {
+                String id = tModel_User.getValueAt(rows[i], 0).toString();
+                if (id.equals(user.getId())) {
+                    JOptionPane.showMessageDialog(this, "操作失败，不可删除自己");
+                    return;
+                }
+                DAOFactory.getUserDAO().remove(id);
+            }
             JOptionPane.showMessageDialog(this, "删除成功");
         });
 
