@@ -248,7 +248,7 @@ public class ManagerFrame extends JFrame {
         b_deleteUser.addActionListener(l -> {
             int[] rows = jtable_user.getSelectedRows();
             if (rows.length == 0) {
-                JOptionPane.showMessageDialog(this, "请选中一行设备再点击删除");
+                JOptionPane.showMessageDialog(this, "请选中一行用户再点击删除");
                 return;
             }
             for (int i = 0; i < rows.length; i++) {
