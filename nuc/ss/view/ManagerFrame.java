@@ -206,32 +206,10 @@ public class ManagerFrame extends JFrame {
          * 查询设备按钮的监听器
          */
         b_queryEquipment.addActionListener(l -> {
-            String keyString = c_queryKey_Equipment.getSelectedItem().toString();
-            if (keyString.equals("所有设备")) {
-                initEquipmentPanel(DAOFactory.getEquipmentDAO());
-                return;
-            }
-            String valueString = t_queryValue_Equipment.getText();
-            String key = convertString(keyString);
-
-            Object value = null;
-            if (key.equals("lent") || key.equals("scrap")) {
-                if (valueString.equals("是") || valueString.equals("否")) {
-                    valueString = convertString(valueString);
-                    value = Boolean.parseBoolean(valueString);
-                } else {
-                    JOptionPane.showMessageDialog(this, "请输入是或否");
-                    return;
-                }
-            } else {
-                value = valueString;
-            }
-
-            List<Equipment> list = DAOFactory.getEquipmentDAO().query(key, value);
-            setEquipmentData(list);
+            refreshTableData();
         });
 
-        b_addEquipment.addActionListener(l -> new AddEquipmentFrame());
+        b_addEquipment.addActionListener(l -> new AddEquipmentFrame(this));
         b_deleteEquipment.addActionListener(l -> {
             int[] rows = jtable_equipment.getSelectedRows();
             if (rows.length == 0) {
@@ -260,6 +238,7 @@ public class ManagerFrame extends JFrame {
                 DAOFactory.getUserDAO().remove(id);
             }
             JOptionPane.showMessageDialog(this, "删除成功");
+            refreshTableData();
         });
 
         /**
@@ -373,6 +352,32 @@ public class ManagerFrame extends JFrame {
                 }
             }
         });
+    }
+
+    public void refreshTableData() {
+        String keyString = c_queryKey_Equipment.getSelectedItem().toString();
+        if (keyString.equals("所有设备")) {
+            initEquipmentPanel(DAOFactory.getEquipmentDAO());
+            return;
+        }
+        String valueString = t_queryValue_Equipment.getText();
+        String key = convertString(keyString);
+
+        Object value = null;
+        if (key.equals("lent") || key.equals("scrap")) {
+            if (valueString.equals("是") || valueString.equals("否")) {
+                valueString = convertString(valueString);
+                value = Boolean.parseBoolean(valueString);
+            } else {
+                JOptionPane.showMessageDialog(this, "请输入是或否");
+                return;
+            }
+        } else {
+            value = valueString;
+        }
+
+        List<Equipment> list = DAOFactory.getEquipmentDAO().query(key, value);
+        setEquipmentData(list);
     }
 
     private void initUserPanel(Object obj) {

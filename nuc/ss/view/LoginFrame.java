@@ -1,11 +1,6 @@
 package nuc.ss.view;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import nuc.ss.dao.DAOFactory;
 import nuc.ss.dao.UserDAO;

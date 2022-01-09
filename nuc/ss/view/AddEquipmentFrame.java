@@ -3,11 +3,7 @@ package nuc.ss.view;
 import java.awt.GridLayout;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import nuc.ss.dao.DAOFactory;
 import nuc.ss.dao.EquipmentDAO;
@@ -18,8 +14,10 @@ public class AddEquipmentFrame extends JFrame {
     private JLabel l_id, l_name, l_type;
     private JTextField t_id, t_name, t_type;
     private JButton b_add, b_reset;
+    private ManagerFrame m;// 利用此成员变量完成对原管理界面数据的刷新
 
-    public AddEquipmentFrame() {
+    public AddEquipmentFrame(ManagerFrame m) {
+        this.m = m;
         setSize(400, 400);
         setLocation(750, 300);
         setTitle("添加设备");
@@ -92,6 +90,7 @@ public class AddEquipmentFrame extends JFrame {
         }
         equipmentDAO.insert(equipment);
         JOptionPane.showMessageDialog(this, "添加成功");
+        m.refreshTableData();
     }
 
     private boolean isEmpty(String id, String name, String type) {
