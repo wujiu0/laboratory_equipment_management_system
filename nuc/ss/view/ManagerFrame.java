@@ -336,8 +336,8 @@ public class ManagerFrame extends JFrame {
                         JOptionPane.showMessageDialog(this, "性别只能为男或女");
                         return;
                     }
-                    if (!(type.equals("管理员") || type.equals("普通用户"))) {
-                        JOptionPane.showMessageDialog(this, "身份设置错误，只能为管理员或者普通用户");
+                    if (!(type.equals("管理员") || type.equals("普通成员"))) {
+                        JOptionPane.showMessageDialog(this, "身份设置错误，只能为管理员或者普通成员");
                         return;
                     }
                     User user = DAOFactory.getUserDAO().query(id);

@@ -49,6 +49,10 @@ public class LoginFrame extends JFrame {
         b_login.addActionListener(e -> {
             String id = t_id.getText();
             String password = new String(t_password.getPassword());
+            if (id.equals("") || password.equals("")) {
+                JOptionPane.showMessageDialog(this, "用户名或密码为空");
+                return;
+            }
             boolean result = login(id, password);
             if (result) {
                 dispose();
